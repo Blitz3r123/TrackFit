@@ -1,0 +1,12 @@
+{
+  "name": "ExerTracker",
+  "displayName": "ExerTracker",
+  "expo": {
+    "name": "ExerTracker",
+    "slug": "ExerTracker",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
