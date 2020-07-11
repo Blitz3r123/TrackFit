@@ -11,13 +11,8 @@ import {
 export default function ViewExercise() {
     return (
         <Container>
-            <Header />
             <Content>
-                <Form>
-                    <Item>
-                        <Input placeholder="Search Exercise" />
-                    </Item>
-                </Form>
+                
             </Content>
         </Container>
     );

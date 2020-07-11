@@ -139,7 +139,7 @@ export default class Home extends React.Component{
                     <View style={styles.view}>
                     <Fab
                         active={this.state.active}
-                        direction="up"
+                        direction="left"
                         containerStyle={{ }}
                         style={{ backgroundColor: '#5067FF' }}
                         position="bottomRight"
@@ -194,7 +194,19 @@ export default class Home extends React.Component{
                         {
                             // SEARCH RESULTS:
                             this.state.searchExercises.length == 0 ? console.log('no search results') : this.state.searchExercises.map(exercise => {
-                                return (<ListItem style={{flex: 1, justifyContent: 'space-between', paddingTop: 20, paddingBottom: 20, paddingLeft: 10, paddingRight: 10, backgroundColor: '#6ffcd2'}} key={exercise.key}>
+                                return (
+                                        <ListItem 
+                                            style={{
+                                                flex: 1, 
+                                                justifyContent: 'space-between', 
+                                                paddingTop: 20, 
+                                                paddingBottom: 20, 
+                                                paddingLeft: 10, 
+                                                paddingRight: 10, 
+                                                backgroundColor: '#6ffcd2'
+                                            }} 
+                                            key={exercise.key}
+                                        >
                                             <Text>
                                                 {exercise.name}
                                             </Text>
@@ -228,8 +240,23 @@ export default class Home extends React.Component{
                         <List>
                         {
                             this.state.exercises.map(exercise => {
-                                return (<ListItem style={{flex: 1, justifyContent: 'space-between', paddingTop: 20, paddingBottom: 20, paddingLeft: 10, paddingRight: 10}} key={exercise.key}>
-                                            <Text>
+                                return (
+                                        <ListItem 
+                                            style={{
+                                                flex: 1, 
+                                                justifyContent: 'space-between', 
+                                                paddingTop: 20, 
+                                                paddingBottom: 20, 
+                                                paddingLeft: 10, 
+                                                paddingRight: 10
+                                            }} 
+                                            key={exercise.key}
+                                        >
+                                            <Text onPress={() => {
+                                                this.props.navigation.navigate('ViewExercise', {
+                                                    exercise: exercise
+                                                });
+                                            }}>
                                                 {exercise.name}
                                             </Text>
                                             <Icon 
