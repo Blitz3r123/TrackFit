@@ -41,7 +41,7 @@ export default class AddExercise extends React.Component{
                     let newExercise = {
                         name: exerciseName,
                         dates: [],
-                        key: exercises[exercises.length - 1].key + 1
+                        key: exercises.length > 0 ? exercises[exercises.length - 1].key + 1 : 1
                     };
                     console.log('new exercise object created:');
                     console.log(newExercise);
@@ -85,7 +85,13 @@ export default class AddExercise extends React.Component{
                 <Content>
                     <Form>
                         <Item>
-                            <Input placeholder="Enter Exercise Name" value={this.state.searchValue} onChangeText={text => this.setState({searchValue: text})} onSubmitEditing={this.handlePress}/>
+                            <Input 
+                                placeholder="Enter Exercise Name" 
+                                value={this.state.searchValue} 
+                                onChangeText={text => this.setState({searchValue: text})} 
+                                onSubmitEditing={this.handlePress}
+                                autoFocus={true}
+                            />
                             <Button>
                                 <Icon name="add" onPress={this.handlePress}/>
                             </Button>
