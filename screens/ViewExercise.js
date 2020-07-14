@@ -41,9 +41,11 @@ export default class ViewExercise extends React.Component{
             active: false
         };
         
-        this.state.exercise.dates.sort((a,b) => {
-            return new Date(b.date) - new Date(a.date);
-        });
+        this.orderDates();
+    }
+
+    UNSAFE_componentWillUpdate(){
+        this.orderDates();
     }
 
     handleRepInput = (value, type) => {
@@ -60,12 +62,21 @@ export default class ViewExercise extends React.Component{
 
     // Formats dates into dd/mm/yyy format
     formatDate = (dateObj) => {
-        var dd = String(dateObj.getDate()).padStart(2, '0');
-        var mm = String(dateObj.getMonth() + 1).padStart(2, '0'); //January is 0!
-        var yyyy = dateObj.getFullYear();
+        let dd = String(dateObj.getDate()).padStart(2, '0');
+        let mm = String(dateObj.getMonth() + 1).padStart(2, '0'); //January is 0!
+        let yyyy = dateObj.getFullYear();
 
         let formattedDate = dd + '/' + mm + '/' + yyyy;
         return formattedDate;
+    }
+
+    unformatDate = (dateString) => {
+        let seperated = dateString.split('/');
+        let dd = seperated[0];
+        let mm = seperated[1];
+        let yyyy = seperated[2];
+
+        return mm + '/' + dd + '/' + yyyy;
     }
 
     handleSubmit = () => {
@@ -247,6 +258,14 @@ export default class ViewExercise extends React.Component{
             .catch(err => {
                 console.log(err)
             });
+    }
+
+    orderDates = () => {
+        this.state.exercise.dates.sort((a,b) => {
+            a = new Date(this.unformatDate(a.date));
+            b = new Date(this.unformatDate(b.date));
+            return b - a;
+        })
     }
 
     render(){
