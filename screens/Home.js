@@ -140,7 +140,6 @@ export default class Home extends React.Component{
                     <Fab
                         active={this.state.active}
                         direction="left"
-                        containerStyle={{ }}
                         style={{ backgroundColor: '#5067FF' }}
                         position="bottomRight"
                         onPress={() => this.setState({ active: !this.state.active })}
@@ -248,13 +247,14 @@ export default class Home extends React.Component{
                                                 paddingTop: 20, 
                                                 paddingBottom: 20, 
                                                 paddingLeft: 10, 
-                                                paddingRight: 10
+                                                paddingRight: 15
                                             }} 
                                             key={exercise.key}
                                         >
                                             <Text onPress={() => {
                                                 this.props.navigation.navigate('ViewExercise', {
-                                                    exercise: exercise
+                                                    exercise: exercise,
+                                                    exercises: this.state.exercises
                                                 });
                                             }}>
                                                 {exercise.name}

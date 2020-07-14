@@ -92,9 +92,9 @@ export default class AddExercise extends React.Component{
                                 onSubmitEditing={this.handlePress}
                                 autoFocus={true}
                             />
-                            <Button>
-                                <Icon name="add" onPress={this.handlePress}/>
-                            </Button>
+                            {/* <Button>
+                                <Icon name="add" onPress={() => {this.handlePress}}/>
+                            </Button> */}
                         </Item>
                     </Form>
                 </Content>

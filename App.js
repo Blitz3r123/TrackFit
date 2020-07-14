@@ -9,16 +9,18 @@ import AddExercise from './screens/AddExercise';
 
 const Stack = createStackNavigator();
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={Home} options={{title: 'ExerTrackr'}}/>
-        <Stack.Screen name="ViewExercise" component={ViewExercise} options={({ route }) => ({ title: route.params.exercise.name })}/>
-        <Stack.Screen name="AddExercise" component={AddExercise} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+export default class App extends React.Component {
+  render(){
+    return (
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={Home} options={{title: 'ExerTrackr'}}/>
+          <Stack.Screen name="ViewExercise" component={ViewExercise} options={({ route }) => ({ title: route.params.exercise.name })}/>
+          <Stack.Screen name="AddExercise" component={AddExercise} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
