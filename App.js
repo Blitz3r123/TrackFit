@@ -14,7 +14,12 @@ export default class App extends React.Component {
     return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={Home} options={{title: 'ExerTrackr'}}/>
+          <Stack.Screen 
+            name="Home" 
+            component={Home} 
+            options={{
+              title: 'ExerTrackr'
+            }}/>
           <Stack.Screen name="ViewExercise" component={ViewExercise} options={({ route }) => ({ title: route.params.exercise.name })}/>
           <Stack.Screen name="AddExercise" component={AddExercise} />
         </Stack.Navigator>

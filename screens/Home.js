@@ -11,9 +11,6 @@ import {
     Icon,
     Text,
     View,
-    Card,
-    CardItem,
-    Body,
     List,
     ListItem,
     Fab
@@ -176,6 +173,7 @@ export default class Home extends React.Component{
                     </Fab>
                         <Form>
                             <Item>
+                                <Icon name="search"></Icon>
                                 <Input 
                                     placeholder="Search Exercise" 
                                     value={this.state.searchValue}
