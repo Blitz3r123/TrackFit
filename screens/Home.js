@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Alert, Dimensions, YellowBox, Modal } from 'react-native';
+import { StyleSheet, Alert, Dimensions, YellowBox, TextInput } from 'react-native';
 import {
     Container,
     Header,
@@ -171,14 +171,22 @@ export default class Home extends React.Component{
                             <Icon name="add" />
                         </Button>
                     </Fab>
-                        <Form>
+                        <Form style={{paddingRight: 10}}>
                             <Item>
                                 <Icon name="search"></Icon>
-                                <Input 
+                                <TextInput 
+                                    style={{
+                                        width: Dimensions.get('window').width - (Dimensions.get('window').width / 5)
+                                    }}
                                     placeholder="Search Exercise" 
                                     value={this.state.searchValue}
                                     onChangeText={text => this.handleSearch(text)}
-                                    />
+                                    ref={(input) => {this.searchInput = input}}
+                                />
+                                <Icon name="close" onPress={() => {
+                                    this.searchInput.clear();
+                                    this.setState({searchExercises: []});
+                                }}></Icon>
                             </Item>
                         </Form>
                         {/* <Button iconRight dark 
@@ -190,7 +198,7 @@ export default class Home extends React.Component{
                         <List>
                         {
                             // SEARCH RESULTS:
-                            this.state.searchExercises.length == 0 ? console.log('no search results') : this.state.searchExercises.map(exercise => {
+                            this.state.searchExercises.length == 0 ? null : this.state.searchExercises.map(exercise => {
                                 return (
                                         <ListItem 
                                             style={{
@@ -200,9 +208,15 @@ export default class Home extends React.Component{
                                                 paddingBottom: 20, 
                                                 paddingLeft: 10, 
                                                 paddingRight: 10, 
-                                                backgroundColor: '#6ffcd2'
+                                                backgroundColor: '#eee'
                                             }} 
                                             key={exercise.key}
+                                            onPress={() => {
+                                                this.props.navigation.navigate('ViewExercise', {
+                                                    exercise: exercise,
+                                                    exercises: this.state.exercises
+                                                });
+                                            }}
                                         >
                                             <Text>
                                                 {exercise.name}
@@ -236,9 +250,35 @@ export default class Home extends React.Component{
                         </List>
                         <List>
                         {
+                            this.state.exercises.length == 0 ? 
+                                <View 
+                                    style={{ 
+                                        height: Dimensions.get('window').height/2, 
+                                        alignItems: 'center', 
+                                        justifyContent: 'center',
+                                        padding: 50,
+                                        marginTop: Dimensions.get('window').height/14
+                                    }}
+                                >
+                                    <Text style={{
+                                        color: '#aaa',
+                                        textAlign: 'center',
+                                        fontSize: 20
+                                    }}>
+                                        Looks like you don't have any exercises, why not add some using the menu button below?
+                                    </Text>
+                                </View> : null
+                        }
+                        {
                             this.state.exercises.map(exercise => {
                                 return (
                                         <ListItem 
+                                            onPress={() => {
+                                                this.props.navigation.navigate('ViewExercise', {
+                                                    exercise: exercise,
+                                                    exercises: this.state.exercises
+                                                });
+                                            }}
                                             style={{
                                                 flex: 1, 
                                                 justifyContent: 'space-between', 
@@ -249,12 +289,7 @@ export default class Home extends React.Component{
                                             }} 
                                             key={exercise.key}
                                         >
-                                            <Text onPress={() => {
-                                                this.props.navigation.navigate('ViewExercise', {
-                                                    exercise: exercise,
-                                                    exercises: this.state.exercises
-                                                });
-                                            }}>
+                                            <Text>
                                                 {exercise.name}
                                             </Text>
                                             <Icon 
