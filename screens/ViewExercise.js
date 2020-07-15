@@ -318,7 +318,7 @@ export default class ViewExercise extends React.Component{
                             </Button>
                         </Form>
                         <View style={styles.example}>
-                            <Text>Example: 12 x 60Kg</Text>
+                            <Text style={{fontWeight: 'bold', color: '#aaa'}}>Example: 12 x 60Kg, 45 x 1 Min</Text>
                         </View>
                         <View style={styles.cardList}>
                         {
@@ -356,7 +356,7 @@ export default class ViewExercise extends React.Component{
                                         <CardItem style={{paddingTop: 0, paddingLeft: 0, marginTop: -20}}>
                                             <List style={styles.list}>
                                             {
-                                                date.items.map(item => {
+                                                date.items.reverse().map(item => {
                                                     return (
                                                         <ListItem style={{flex: 1, justifyContent: 'space-between'}}>
                                                             <Text style={{fontSize: 14}}>

@@ -28,7 +28,7 @@ export default class Home extends React.Component{
             searchValue: "",
             exercises: [],
             active: false,
-            searchExercises: []
+            searchExercises: [],
         };
     }
 
@@ -116,9 +116,10 @@ export default class Home extends React.Component{
     }
 
     handleSearch = (text) => {
-        // console.log('searching for "' + text + '":');
         this.setState({searchValue: text});
+        
         let results = this.state.exercises.filter(a => a.name.toUpperCase().includes(text.toUpperCase()));
+        
         if(results.length == 0 || results.length == this.state.exercises.length){
             this.setState({searchExercises: []});
         }else{
@@ -126,7 +127,7 @@ export default class Home extends React.Component{
         }
 
         // console.log('searchExercises:');
-        console.log(this.state.searchExercises);
+        // console.log(this.state.searchExercises);
     }
 
     render(){
@@ -196,6 +197,9 @@ export default class Home extends React.Component{
                             <Text>Add Exercise</Text>
                         </Button> */}
                         <List>
+                        {
+                            this.state.emptySearch
+                        }
                         {
                             // SEARCH RESULTS:
                             this.state.searchExercises.length == 0 ? null : this.state.searchExercises.map(exercise => {
