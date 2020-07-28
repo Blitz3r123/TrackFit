@@ -248,7 +248,7 @@ export default class ViewExercise extends React.Component{
 		// Write new exercise to file
 		rnfs.writeFile(path, JSON.stringify(exercises))
 			.then(() => {
-				console.log('File updated.');
+				// console.log('File updated.');
 			})
 			.catch(err => {
 				console.log(err)
@@ -453,7 +453,7 @@ export default class ViewExercise extends React.Component{
 																			
 																		Alert.alert(
 																			"",
-																			"You sure?",
+																			`Are you sure you want to delete ${item.rep} x ${item.weight} ${item.unit}?`,
 																			[
 																				{
 																					text: 'No.',
