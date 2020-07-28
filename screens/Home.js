@@ -1,339 +1,215 @@
 import React from 'react';
-import { StyleSheet, Alert, Dimensions, YellowBox, TextInput } from 'react-native';
+import { StyleSheet, Alert, Dimensions, YellowBox, TextInput, Image, ScrollView } from 'react-native';
 import {
-    Container,
-    Header,
-    Content,
-    Form,
-    Item,
-    Input,
-    Button,
-    Icon,
-    Text,
-    View,
-    List,
-    ListItem,
-    Fab
+  Container,
+  Header,
+  Content,
+  Form,
+  Item,
+  Input,
+  Button,
+  Icon,
+  Text,
+  View,
+  List,
+  ListItem,
+  Fab
 } from 'native-base';
+
+import ExerciseListItem from '../components/ExerciseListItem';
+import EmptyExerciseListMessage from '../components/EmptyExerciseListMessage';
+import SearchBar from './../components/SearchBar';
 
 const rnfs = require('react-native-fs');
 const path = rnfs.DocumentDirectoryPath;
 
 export default class Home extends React.Component{
-    constructor(props){
-        super(props);
-        // rnfs.unlink(path + '/exercises.json');
-        this.handlePress = this.handlePress.bind(this);
-        this.state = {
-            searchValue: "",
-            exercises: [],
-            active: false,
-            searchExercises: [],
-        };
-    }
+  constructor(props){
+    super(props);
+    // rnfs.unlink(path + '/exercises.json');
+    this.handlePress = this.handlePress.bind(this);
+    this.readExerciseFile = this.readExerciseFile.bind(this);
+    this.state = {
+      searchValue: "",
+      exercises: [],
+      active: false,
+      searchExercises: []
+    };
+  }
 
-    componentDidMount(){
-        YellowBox.ignoreWarnings(['Animated: `useNativeDriver`']);
-        this._unsubscribe = this.props.navigation.addListener('focus', () => {      // Add a listener to refresh list on focus
-            rnfs.exists(path + '/exercises.json').then(result => {
-                if(result){         // File Exists
-                    // console.log('retrieving exercises');
-                    rnfs.readFile(path + '/exercises.json').then(result => {
-                        // console.log('file contents:');
-                        // console.log(result);
-                        let exercises = JSON.parse(result);
-                        this.setState({ exercises });
-                    });
-                }else{
-                    let exercises = [
-                        {
-                            name: exerciseName,
-                            dates: []
-                        }
-                    ];
-                    rnfs.writeFile(path + '/exercises.json', JSON.stringify(exercises));
-                }
-            });
-        });
-    }
+  forceRender = () => {
+    this.setState({active: false});
+    this.readExerciseFile();
+  }
 
-    componentWillUnmount(){
-        this._unsubscribe();
-    }
-
-    UNSAFE_componentWillMount(){
-        // console.log('home componentWillMount');
-        rnfs.exists(path + '/exercises.json').then(result => {
-            if(result){         // File Exists
-                // console.log('exercises.json does exist');
-                // console.log('reading exercises.json');
-                rnfs.readFile(path + '/exercises.json').then(result => {
-                    // console.log('read exercises.json:');
-                    // console.log(result);
-                    // console.log('parsing exercises.json');
-                    let exercises = JSON.parse(result);
-                    // console.log('exercises.json parsed:');
-                    // console.log(exercises);
-                    this.setState({ exercises });
-                });
-            }else{
-                // console.log('exercises.json does not exist');
-                let exercises = [];
-                rnfs.writeFile(path + '/exercises.json', JSON.stringify(exercises));
-            }
-        });
-    }
-
-    handlePress = (key) => {
-        // console.log('deleting exercise with key ' + key);
-        var toDelete = this.state.exercises[key - 1];
-        // console.log('array without the exercise:');
-        let exercises = this.state.exercises.filter(a => a.key != key);
-        // console.log(exercises);
-        // console.log('writing array to file');
-        rnfs.unlink(path + '/exercises.json');
-        rnfs.writeFile(path + '/exercises.json', JSON.stringify(exercises)).then(() => {
-            // console.log('array written to file');
+  componentDidMount(){
+    YellowBox.ignoreWarnings(['Animated: `useNativeDriver`']);
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {      // Add a listener to refresh list on focus
+      rnfs.exists(path + '/exercises.json').then(result => {
+        if(result){         // File Exists
+          // console.log('retrieving exercises');
+          rnfs.readFile(path + '/exercises.json').then(result => {
+            // console.log('file contents:');
+            // console.log(result);
+            let exercises = JSON.parse(result);
             this.setState({ exercises });
-            this.setState({ searchExercises: [] });
-            this.setState({ searchValue: '' });
-            // console.log('state set to exercises');
-        }).catch(err => {console.log(err)});
-
-    }
-
-    deleteFile = (file) => {
-        rnfs.exists(file).then((exists) => {
-            if(exists){
-                rnfs.unlink(file).then( () => {
-                    console.log(`${file} deleted.`);
-                    this.setState({ exercises: [] });
-                });
-            }else{
-                console.log('exercises.json does not exist.');
-            }
-        });
-    }
-
-    handleSearch = (text) => {
-        this.setState({searchValue: text});
-        
-        let results = this.state.exercises.filter(a => a.name.toUpperCase().includes(text.toUpperCase()));
-        
-        if(results.length == 0 || results.length == this.state.exercises.length){
-            this.setState({searchExercises: []});
+          });
         }else{
-            this.setState({ searchExercises: results });
+          let exercises = [];
+          rnfs.writeFile(path + '/exercises.json', JSON.stringify(exercises));
         }
+      });
+    });
+  }
 
-        // console.log('searchExercises:');
-        // console.log(this.state.searchExercises);
-    }
+  componentWillUnmount(){
+    this._unsubscribe();
+  }
 
-    render(){
-        return (
-            <Container>
-                <Content>
-                    <View style={styles.view}>
-                    <Fab
-                        active={this.state.active}
-                        direction="left"
-                        style={{ backgroundColor: '#5067FF' }}
-                        position="bottomRight"
-                        onPress={() => this.setState({ active: !this.state.active })}
-                    >
-                        <Icon name="md-menu" />
-                        <Button 
-                            style={{ backgroundColor: '#DD5144' }} 
-                            onPress={
-                                () => {
-                                    Alert.alert(
-                                        "Confirm Delete",
-                                        "Are you sure you want to delete ALL exercises?",
-                                        [
-                                            {
-                                                text: 'Wait. What?! No!',
-                                                onPress: () => {console.log('cancelled')}
-                                            },
-                                            {
-                                                text: `Yes. I hate exercises.`,
-                                                onPress: () => {this.deleteFile(path + '/exercises.json')}
-                                            }
-                                        ],
-                                        { cancelable: true }
-                                    );
-                                    // this.deleteFile(path + '/exercises.json');
-                                } 
-                            }
-                        >
-                            <Icon name="trash" />
-                        </Button>
-                        <Button onPress={() => this.props.navigation.navigate('AddExercise')}>
-                            <Icon name="add" />
-                        </Button>
-                    </Fab>
-                        <Form style={{paddingRight: 10}}>
-                            <Item>
-                                <Icon name="search"></Icon>
-                                <TextInput 
-                                    style={{
-                                        width: Dimensions.get('window').width - (Dimensions.get('window').width / 5)
-                                    }}
-                                    placeholder="Search Exercise" 
-                                    value={this.state.searchValue}
-                                    onChangeText={text => this.handleSearch(text)}
-                                    ref={(input) => {this.searchInput = input}}
-                                />
-                                <Icon name="close" onPress={() => {
-                                    this.searchInput.clear();
-                                    this.setState({searchExercises: []});
-                                }}></Icon>
-                            </Item>
-                        </Form>
-                        {/* <Button iconRight dark 
-                            style={styles.button} 
-                            onPress={() => this.props.navigation.navigate("AddExercise")}
-                        >
-                            <Text>Add Exercise</Text>
-                        </Button> */}
-                        <List>
-                        {
-                            this.state.emptySearch
-                        }
-                        {
-                            // SEARCH RESULTS:
-                            this.state.searchExercises.length == 0 ? null : this.state.searchExercises.map(exercise => {
-                                return (
-                                        <ListItem 
-                                            style={{
-                                                flex: 1, 
-                                                justifyContent: 'space-between', 
-                                                paddingTop: 20, 
-                                                paddingBottom: 20, 
-                                                paddingLeft: 10, 
-                                                paddingRight: 10, 
-                                                backgroundColor: '#eee'
-                                            }} 
-                                            key={exercise.key}
-                                            onPress={() => {
-                                                this.props.navigation.navigate('ViewExercise', {
-                                                    exercise: exercise,
-                                                    exercises: this.state.exercises
-                                                });
-                                            }}
-                                        >
-                                            <Text>
-                                                {exercise.name}
-                                            </Text>
-                                            <Icon 
-                                                onPress={
-                                                    () => {
-                                                        Alert.alert(
-                                                            "Confirm Delete",
-                                                            `Are you sure you want to delete ${exercise.name}?`,
-                                                            [
-                                                                {
-                                                                    text: 'Wait. What?! No!',
-                                                                    onPress: () => {console.log('cancelled')}
-                                                                },
-                                                                {
-                                                                    text: `Yes. I don't want to see ${exercise.name} ever again.`,
-                                                                    onPress: () => {this.handlePress(exercise.key)}
-                                                                }
-                                                            ],
-                                                            { cancelable: true }
-                                                        );
-                                                    } 
-                                                }
-                                                style={{ color: 'grey' }} 
-                                                name="md-trash"
-                                            ></Icon>
-                                </ListItem>)
-                            })
-                        }
-                        </List>
-                        <List>
-                        {
-                            this.state.exercises.length == 0 ? 
-                                <View 
-                                    style={{ 
-                                        height: Dimensions.get('window').height/2, 
-                                        alignItems: 'center', 
-                                        justifyContent: 'center',
-                                        padding: 50,
-                                        marginTop: Dimensions.get('window').height/14
-                                    }}
-                                >
-                                    <Text style={{
-                                        color: '#aaa',
-                                        textAlign: 'center',
-                                        fontSize: 20
-                                    }}>
-                                        Looks like you don't have any exercises, why not add some using the menu button below?
-                                    </Text>
-                                </View> : null
-                        }
-                        {
-                            this.state.exercises.map(exercise => {
-                                return (
-                                        <ListItem 
-                                            onPress={() => {
-                                                this.props.navigation.navigate('ViewExercise', {
-                                                    exercise: exercise,
-                                                    exercises: this.state.exercises
-                                                });
-                                            }}
-                                            style={{
-                                                flex: 1, 
-                                                justifyContent: 'space-between', 
-                                                paddingTop: 20, 
-                                                paddingBottom: 20, 
-                                                paddingLeft: 10, 
-                                                paddingRight: 15
-                                            }} 
-                                            key={exercise.key}
-                                        >
-                                            <Text>
-                                                {exercise.name}
-                                            </Text>
-                                            <Icon 
-                                                onPress={
-                                                    () => {
-                                                        Alert.alert(
-                                                            "Confirm Delete",
-                                                            `Are you sure you want to delete ${exercise.name}?`,
-                                                            [
-                                                                {
-                                                                    text: 'Wait. What?! No!',
-                                                                    onPress: () => {console.log('cancelled')}
-                                                                },
-                                                                {
-                                                                    text: `Yes. I don't want to see ${exercise.name} ever again.`,
-                                                                    onPress: () => {this.handlePress(exercise.key)}
-                                                                }
-                                                            ],
-                                                            { cancelable: true }
-                                                        );
-                                                    } 
-                                                }
-                                                style={{ color: 'grey' }} 
-                                                name="md-trash"
-                                            ></Icon>
-                                </ListItem>)
-                            })
-                        }
-                        </List>
-                    </View>
-                    {/* <Button iconRight dark 
-                        style={styles.button} 
-                        onPress={() => this.deleteFile(path + '/exercises.json')}
-                    >
-                        <Text>Delete exercises.json</Text>
-                    </Button> */}
-                </Content>
-            </Container>
-        );
+  readExerciseFile = () => {
+    rnfs.exists(path + '/exercises.json').then(result => {
+      if(result){
+        rnfs.readFile(path + '/exercises.json').then(result => {
+          this.setState({ exercises: JSON.parse(result) });
+        });
+      }
+    });
+  }
+
+  UNSAFE_componentWillMount(){
+    rnfs.exists(path + '/exercises.json').then(result => {
+      if(result){         // File Exists
+        rnfs.readFile(path + '/exercises.json').then(result => {
+          let exercises = JSON.parse(result);
+          this.setState({ exercises });
+        });
+      }else{
+        let exercises = [];
+        rnfs.writeFile(path + '/exercises.json', JSON.stringify(exercises));
+      }
+    });
+  }
+
+  handlePress = (key) => {
+      // console.log('deleting exercise with key ' + key);
+      var toDelete = this.state.exercises[key - 1];
+      // console.log('array without the exercise:');
+      let exercises = this.state.exercises.filter(a => a.key != key);
+      // console.log(exercises);
+      // console.log('writing array to file');
+      rnfs.unlink(path + '/exercises.json');
+      rnfs.writeFile(path + '/exercises.json', JSON.stringify(exercises)).then(() => {
+        // console.log('array written to file');
+        this.setState({ exercises });
+        this.setState({ searchExercises: [] });
+        this.setState({ searchValue: '' });
+        // console.log('state set to exercises');
+      }).catch(err => {console.log(err)});
+
+  }
+
+  deleteFile = (file) => {
+    rnfs.exists(file).then((exists) => {
+      if(exists){
+        rnfs.unlink(file).then( () => {
+          console.log(`${file} deleted.`);
+          this.setState({ exercises: [] });
+        });
+      }else{
+        console.log('exercises.json does not exist.');
+      }
+    });
+  }
+
+  handleSearch = (text) => {
+    this.setState({searchValue: text});
+    
+    let results = this.state.exercises.filter(a => a.name.toUpperCase().includes(text.toUpperCase()));
+    
+    if(results.length == 0 || results.length == this.state.exercises.length){
+      this.setState({searchExercises: []});
+    }else{
+      this.setState({ searchExercises: results });
     }
+  }
+
+  render(){
+    return (
+      <Container>
+        <Content>
+          <ScrollView style={styles.view}>
+            <SearchBar 
+              handlePress={this.handlePress}
+              navigation={this.props.navigation}
+              forceRender={this.forceRender}
+              exercises={this.state.exercises}
+            />
+            <List>
+            {
+              this.state.exercises.length == 0 ? 
+                <EmptyExerciseListMessage /> : null
+            }
+            {
+              this.state.exercises.map(exercise => {
+                return (
+                  <ExerciseListItem 
+                    forceRender={this.forceRender}
+                    key={exercise.key}
+                    exercise={exercise} 
+                    exercises={this.state.exercises} 
+                    handlePress={this.handlePress} 
+                    navigation={this.props.navigation} 
+                    style={{
+                      flex: 1, 
+                      justifyContent: 'space-between', 
+                      paddingLeft: 10,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                  }}/>);
+              })
+            }
+            </List>
+          </ScrollView>
+          <Fab
+            active={this.state.active}
+            direction="left"
+            style={{ backgroundColor: '#5067FF' }}
+            position="bottomRight"
+            onPress={() => this.setState({ active: !this.state.active })}
+          >
+            <Icon name="md-menu" />
+            <Button 
+              style={{ backgroundColor: '#DD5144' }} 
+              onPress={
+                () => {
+                  Alert.alert(
+                    "Confirm Delete",
+                    "Are you sure you want to delete ALL exercises?",
+                    [
+                      {
+                        text: 'Wait. What?! No!',
+                        onPress: () => {console.log('cancelled')}
+                      },
+                      {
+                        text: `Yes. I hate exercises.`,
+                        onPress: () => {this.deleteFile(path + '/exercises.json')}
+                      }
+                    ],
+                    { cancelable: true }
+                  );
+                } 
+              }
+            >
+              <Icon name="trash" />
+            </Button>
+            <Button onPress={() => this.props.navigation.navigate('AddExercise')}>
+                <Icon name="add" />
+            </Button>
+          </Fab>
+        </Content>
+      </Container>
+    );
+  }
 }
 
 const styles = StyleSheet.create({

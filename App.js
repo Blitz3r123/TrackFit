@@ -7,6 +7,8 @@ import Home from './screens/Home';
 import ViewExercise from './screens/ViewExercise';
 import AddExercise from './screens/AddExercise';
 
+import Header from './components/Header';
+
 const Stack = createStackNavigator();
 
 export default class App extends React.Component {
@@ -19,7 +21,7 @@ export default class App extends React.Component {
             name="Home" 
             component={Home} 
             options={{
-              title: 'ExerTrackr'
+              headerTitle: props => <Header {...props} />
             }}
           />
 
