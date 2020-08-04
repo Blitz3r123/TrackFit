@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from './screens/Home';
 import ViewExercise from './screens/ViewExercise';
 import AddExercise from './screens/AddExercise';
+import Introduction from './screens/Introduction';
 
 import Header from './components/Header';
 
@@ -17,6 +18,14 @@ export default class App extends React.Component {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
           
+        <Stack.Screen 
+            name="Introduction" 
+            component={Introduction} 
+            options={{
+              headerTitle: props => <Header {...props} />
+            }}
+          />
+
           <Stack.Screen 
             name="Home" 
             component={Home} 
@@ -36,6 +45,7 @@ export default class App extends React.Component {
           <Stack.Screen 
             name="AddExercise" 
             component={AddExercise} 
+            options={{ title: "Add an Exercise" }}
           />
 
         </Stack.Navigator>

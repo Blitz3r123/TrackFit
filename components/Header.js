@@ -5,7 +5,7 @@ export default class Header extends React.Component {
   render(){
     return (
         <View style={styles.background}>
-            <Text style={styles.text}>FitLog</Text>
+            <Text style={styles.text}>ProFit</Text>
         </View>
     );
   }
